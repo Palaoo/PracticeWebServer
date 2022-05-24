@@ -8,19 +8,18 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class MemberServlet
+ * Servlet implementation class empServlet
  */
-@WebServlet("/member")
-public class MemberServlet extends HttpServlet {
+@WebServlet("/empList")
+public class empServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public MemberServlet() {
+	public empServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -31,30 +30,24 @@ public class MemberServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		HttpSession session = request.getSession();
-		String userid = (String) session.getAttribute("userid");
-		if (userid == null || userid.equals("")) {
-			response.sendRedirect("login3.html");
-			return;
-		}
-
 		response.setContentType("text/html; charset=utf-8"); // 출력 인코딩 타입 utf-8
+		
 		PrintWriter out = response.getWriter();
-		MemberDAO dao = new MemberDAO();
-		ArrayList<MemberVO> list = dao.listMember();
+		empDAO dao = new empDAO();
+		ArrayList<empVO> list = dao.listEmployees();
 
-		out.print("<html><head><title>Result from t_member</title></head><body>");
-		out.print(
-				"<table border=1><tr><th>ID</th><th>Password</th><th>이름</th><th>모바일</th><th>등록일</th><th>작업선택</th></tr>"); // head
-		// line
-		MemberVO mvo;
+		out.print("<html><head><title>Result from employees</title></head><body>");
+		out.print("<table border=1><tr><th>사원ID</th><th>사원명</th><th>매니저ID</th><th>부서ID</th></tr>"); // head
+																									// line
+		empVO eVO;
+		
 		for (int i = 0; i < list.size(); i++) {
-			mvo = list.get(i);
-			out.print("<tr><td>" + mvo.getId() + "</td><td>" + mvo.getPwd() + "</td><td>" + mvo.getName() + "</td><td>"
-					+ mvo.getMobile() + "</td><td>" + mvo.getJoinDate() + "</td><td><a href='update?id=" + mvo.getId()
-					+ "'>수정</a>&nbsp;<a href='delete?id=" + mvo.getId() + "'> 삭제</a></td></tr>");
+			eVO = list.get(i);
+			out.print("<tr><td>" + eVO.getEmp_id() + "</td><td>" + eVO.getEmp_name() + "</td><td>" + eVO.getManager_name()
+					+ "</td><td>" + eVO.getDepartment_name() + "</td></tr>");
 		}
-		out.print("</table><a href='addnew.html'>추가</a></body></html>");
+		
+		out.print("</table></body></html>");
 	}
 
 	/**

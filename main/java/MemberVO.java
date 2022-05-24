@@ -1,4 +1,4 @@
-
+// database table과 같은 구조(schema) + getter/setter
 public class MemberVO {
 	private String id;
 	private String pwd;
@@ -9,6 +9,16 @@ public class MemberVO {
 	public MemberVO() {
 		
 	}
+	
+
+	public MemberVO(String id, String pwd, String name, String mobile, String joinDate) {
+		this.id = id;
+		this.pwd = pwd;
+		this.name = name;
+		this.mobile = mobile;
+		this.joinDate = joinDate;
+	}
+
 
 	public String getId() {
 		return id;

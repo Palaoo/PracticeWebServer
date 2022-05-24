@@ -1,7 +1,6 @@
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,16 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- * Servlet implementation class MemberServlet
+ * Servlet implementation class addnewServlet
  */
-@WebServlet("/member")
-public class MemberServlet extends HttpServlet {
+@WebServlet("/addnew")
+public class addnewServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 
 	/**
 	 * @see HttpServlet#HttpServlet()
 	 */
-	public MemberServlet() {
+	public addnewServlet() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
@@ -33,28 +32,21 @@ public class MemberServlet extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		String userid = (String) session.getAttribute("userid");
-		if (userid == null || userid.equals("")) {
+		if (userid == null || userid.equals(userid)) {
 			response.sendRedirect("login3.html");
 			return;
 		}
-
-		response.setContentType("text/html; charset=utf-8"); // 출력 인코딩 타입 utf-8
-		PrintWriter out = response.getWriter();
-		MemberDAO dao = new MemberDAO();
-		ArrayList<MemberVO> list = dao.listMember();
-
-		out.print("<html><head><title>Result from t_member</title></head><body>");
-		out.print(
-				"<table border=1><tr><th>ID</th><th>Password</th><th>이름</th><th>모바일</th><th>등록일</th><th>작업선택</th></tr>"); // head
-		// line
-		MemberVO mvo;
-		for (int i = 0; i < list.size(); i++) {
-			mvo = list.get(i);
-			out.print("<tr><td>" + mvo.getId() + "</td><td>" + mvo.getPwd() + "</td><td>" + mvo.getName() + "</td><td>"
-					+ mvo.getMobile() + "</td><td>" + mvo.getJoinDate() + "</td><td><a href='update?id=" + mvo.getId()
-					+ "'>수정</a>&nbsp;<a href='delete?id=" + mvo.getId() + "'> 삭제</a></td></tr>");
+		response.setContentType("text/html; charset=utf-8");
+		MemberVO mvo = new MemberVO(request.getParameter("id"), request.getParameter("password"),
+				request.getParameter("name"), request.getParameter("mobile"), request.getParameter("joindate"));
+		MemberDAO mDAO = new MemberDAO();
+		try {
+			mDAO.addnewMember(mvo);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		out.print("</table><a href='addnew.html'>추가</a></body></html>");
+		response.sendRedirect("member");
 	}
 
 	/**
